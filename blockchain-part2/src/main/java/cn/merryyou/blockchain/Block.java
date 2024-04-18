@@ -5,13 +5,6 @@ import cn.merryyou.blockchain.utils.StringUtil;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Created on 2018/3/10 0010.
- *
- * @author zlf
- * @email i@merryyou.cn
- * @since 1.0
- */
 public class Block {
     public String hash;
     public String previousHash;

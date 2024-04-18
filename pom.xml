@@ -11,6 +11,10 @@
         <module>blockchain-part1</module>
         <module>blockchain-part2</module>
     </modules>
+    <properties>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
+    </properties>
     <packaging>pom</packaging>
 
 

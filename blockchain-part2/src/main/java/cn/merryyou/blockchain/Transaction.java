@@ -6,14 +6,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 
-/**
- * 交易类
- * Created on 2018/3/10 0010.
- *
- * @author zlf
- * @email i@merryyou.cn
- * @since 1.0
- */
 public class Transaction {
 
     public String transactionId; //Contains a hash of transaction*
@@ -54,8 +46,8 @@ public class Transaction {
         }
 
         //Generate transaction outputs:
-        float leftOver = getInputsValue() - value; //get value of inputs then the left over change:
-        transactionId = calulateHash();
+        float leftOver = getInputsValue() - value; //get value of inputs then the leftover change:
+        transactionId = calculateHash();
         outputs.add(new TransactionOutput( this.reciepient, value,transactionId)); //send value to recipient
         outputs.add(new TransactionOutput( this.sender, leftOver,transactionId)); //send the left over 'change' back to sender
 
@@ -100,7 +92,7 @@ public class Transaction {
         return total;
     }
 
-    private String calulateHash() {
+    private String calculateHash() {
         sequence++; //increase the sequence to avoid 2 identical transactions having the same hash
         return StringUtil.applySha256(
                 StringUtil.getStringFromKey(sender) +
