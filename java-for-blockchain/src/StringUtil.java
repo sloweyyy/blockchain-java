@@ -1,6 +1,3 @@
-package cn.merryyou.blockchain.utils;
-
-import cn.merryyou.blockchain.Transaction;
 import com.google.gson.GsonBuilder;
 
 import java.security.*;
@@ -8,18 +5,11 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-/**
- * 生成电子签名的工具类
- * Created on 2018/3/10 0010.
- *
- * @author zlf
- * @email i@merryyou.cn
- * @since 1.0
- */
 public class StringUtil {
 
     public static String applySha256(String input) {
         try {
+            // Ap dung thuat toan bam SHA-256
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(input.getBytes("UTF-8"));
             StringBuffer hexString = new StringBuffer();
@@ -35,7 +25,7 @@ public class StringUtil {
     }
 
 
-    //Applies ECDSA Signature and returns the result ( as bytes ).
+    // Ap dung chu ky ECDSA va tra ve ket qua (duoi dang byte).
     public static byte[] applyECDSASig(PrivateKey privateKey, String input) {
         Signature dsa;
         byte[] output = new byte[0];
@@ -52,7 +42,7 @@ public class StringUtil {
         return output;
     }
 
-    //Verifies a String signature
+    // Xac minh chu ky chuoi
     public static boolean verifyECDSASig(PublicKey publicKey, String data, byte[] signature) {
         try {
             Signature ecdsaVerify = Signature.getInstance("ECDSA", "BC");
@@ -64,12 +54,12 @@ public class StringUtil {
         }
     }
 
-    //Short hand helper to turn Object into a json string
+    // Tra ve dang JSON cua mot doi tuong
     public static String getJson(Object o) {
         return new GsonBuilder().setPrettyPrinting().create().toJson(o);
     }
 
-    //Returns difficulty string target, to compare to hash. eg difficulty of 5 will return "00000"
+    // Tra ve mot chuoi voi do kho cua no
     public static String getDificultyString(int difficulty) {
         return new String(new char[difficulty]).replace('\0', '0');
     }

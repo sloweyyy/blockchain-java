@@ -6,7 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="blockchain-part2" />
+        <module name="java-for-blockchain" />
         <module name="blockchain-part1" />
       </profile>
     </annotationProcessing>

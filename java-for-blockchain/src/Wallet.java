@@ -1,5 +1,3 @@
-package cn.merryyou.blockchain;
-
 import java.security.*;
 import java.security.spec.ECGenParameterSpec;
 import java.util.ArrayList;
@@ -11,7 +9,7 @@ public class Wallet {
     public PrivateKey privateKey;
     public PublicKey publicKey;
 
-    public HashMap<String,TransactionOutput> UTXOs = new HashMap<String,TransactionOutput>();
+    public HashMap<String, TransactionOutput> UTXOs = new HashMap<String, TransactionOutput>();
 
     public Wallet() {
         generateKeyPair();
@@ -22,10 +20,10 @@ public class Wallet {
             KeyPairGenerator keyGen = KeyPairGenerator.getInstance("ECDSA","BC");
             SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
             ECGenParameterSpec ecSpec = new ECGenParameterSpec("prime192v1");
-            // Initialize the key generator and generate a KeyPair
-            keyGen.initialize(ecSpec, random); //256
+            // Tao khoa va cap khoa
+            keyGen.initialize(ecSpec, random); // 256
             KeyPair keyPair = keyGen.generateKeyPair();
-            // Set the public and private keys from the keyPair
+            // Gan khoa cong khai va khoa rieng tu cap khoa
             privateKey = keyPair.getPrivate();
             publicKey = keyPair.getPublic();
 
@@ -38,17 +36,17 @@ public class Wallet {
         float total = 0;
         for (Map.Entry<String, TransactionOutput> item: NoobChain.UTXOs.entrySet()){
             TransactionOutput UTXO = item.getValue();
-            if(UTXO.isMine(publicKey)) { //if output belongs to me ( if coins belong to me )
-                UTXOs.put(UTXO.id,UTXO); //add it to our list of unspent transactions.
+            if (UTXO.isMine(publicKey)) { // Neu giao dich thuoc ve minh (neu coin thuoc ve minh)
+                UTXOs.put(UTXO.id, UTXO); // Them vao danh sach cac giao dich chua duoc chi tieu.
                 total += UTXO.value ;
             }
         }
         return total;
     }
 
-    public Transaction sendFunds(PublicKey _recipient,float value ) {
+    public Transaction sendFunds(PublicKey _recipient, float value) {
         if(getBalance() < value) {
-            System.out.println("#Not Enough funds to send transaction. Transaction Discarded.");
+            System.out.println("#Khong du tien de thuc hien giao dich. Giao dich bi huy.");
             return null;
         }
         ArrayList<TransactionInput> inputs = new ArrayList<TransactionInput>();

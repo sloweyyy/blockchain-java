@@ -1,23 +1,19 @@
-package cn.merryyou.blockchain;
-
-import cn.merryyou.blockchain.utils.StringUtil;
-
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
 
 public class Transaction {
 
-    public String transactionId; //Contains a hash of transaction*
-    public PublicKey sender; //Senders address/public key.
-    public PublicKey reciepient; //Recipients address/public key.
-    public float value; //Contains the amount we wish to send to the recipient.
-    public byte[] signature; //This is to prevent anybody else from spending funds in our wallet.
+    public String transactionId; // ID cua giao dich
+    public PublicKey sender; // Public key cua nguoi gui
+    public PublicKey reciepient; // Public key cua nguoi nhan
+    public float value; // Gia tri cua giao dich
+    public byte[] signature; // Chu ky cua giao dich, ngan chan bat ky ai khac chi tieu tien trong vi cua minh
 
     public ArrayList<TransactionInput> inputs = new ArrayList<TransactionInput>();
     public ArrayList<TransactionOutput> outputs = new ArrayList<TransactionOutput>();
 
-    private static int sequence = 0; //A rough count of how many transactions have been generated
+    private static int sequence = 0; // So luong giao dich duoc tao ra
 
     // Constructor:
     public Transaction(PublicKey from, PublicKey to, float value,  ArrayList<TransactionInput> inputs) {
@@ -30,35 +26,35 @@ public class Transaction {
     public boolean processTransaction() {
 
         if(verifySignature() == false) {
-            System.out.println("#Transaction Signature failed to verify");
+            System.out.println("#Chu ky giao dich khong hop le");
             return false;
         }
 
-        //Gathers transaction inputs (Making sure they are unspent):
+        // Thu thap cac giao dich dau vao (Dam bao chung khong duoc chi tieu):
         for(TransactionInput i : inputs) {
             i.UTXO = NoobChain.UTXOs.get(i.transactionOutputId);
         }
 
-        //Checks if transaction is valid:
+        // Kiem tra xem giao dich co hop le khong:
         if(getInputsValue() < NoobChain.minimumTransaction) {
-            System.out.println("Transaction Inputs to small: " + getInputsValue());
+            System.out.println("Gia tri giao dich qua nho: " + getInputsValue());
             return false;
         }
 
-        //Generate transaction outputs:
-        float leftOver = getInputsValue() - value; //get value of inputs then the leftover change:
+        // Tao ra cac giao dich dau ra:
+        float leftOver = getInputsValue() - value; // Lay gia tri cua cac giao dich dau vao sau do lay phan thua lai:
         transactionId = calculateHash();
-        outputs.add(new TransactionOutput( this.reciepient, value,transactionId)); //send value to recipient
-        outputs.add(new TransactionOutput( this.sender, leftOver,transactionId)); //send the left over 'change' back to sender
+        outputs.add(new TransactionOutput(this.reciepient, value, transactionId)); // Gui gia tri cho nguoi nhan
+        outputs.add(new TransactionOutput(this.sender, leftOver, transactionId)); // Gui lai phan thua lai cho nguoi gui
 
-        //Add outputs to Unspent list
+        // Them cac giao dich dau ra vao danh sach UTXO
         for(TransactionOutput o : outputs) {
             NoobChain.UTXOs.put(o.id , o);
         }
 
-        //Remove transaction inputs from UTXO lists as spent:
+        // Xoa cac giao dich dau vao tu danh sach UTXO vi da chi tieu:
         for(TransactionInput i : inputs) {
-            if(i.UTXO == null) continue; //if Transaction can't be found skip it
+            if (i.UTXO == null) continue; // Neu giao dich khong duoc tim thay thi bo qua
             NoobChain.UTXOs.remove(i.UTXO.id);
         }
 
@@ -68,7 +64,8 @@ public class Transaction {
     public float getInputsValue() {
         float total = 0;
         for(TransactionInput i : inputs) {
-            if(i.UTXO == null) continue; //if Transaction can't be found skip it, This behavior may not be optimal.
+            if (i.UTXO == null)
+                continue; // Neu giao dich khong duoc tim thay thi bo qua, hanh vi nay co the khong toi uu.
             total += i.UTXO.value;
         }
         return total;
@@ -93,7 +90,7 @@ public class Transaction {
     }
 
     private String calculateHash() {
-        sequence++; //increase the sequence to avoid 2 identical transactions having the same hash
+        sequence++; // Tang so luong giao dich duoc tao ra
         return StringUtil.applySha256(
                 StringUtil.getStringFromKey(sender) +
                         StringUtil.getStringFromKey(reciepient) +

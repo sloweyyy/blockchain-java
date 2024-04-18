@@ -1,7 +1,3 @@
-package cn.merryyou.blockchain;
-
-import cn.merryyou.blockchain.utils.StringUtil;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -9,19 +5,19 @@ public class Block {
     public String hash;
     public String previousHash;
     public String merkleRoot;
-    public ArrayList<Transaction> transactions = new ArrayList<Transaction>(); //our data will be a simple message.
-    public long timeStamp; //as number of milliseconds since 1/1/1970.
-    public int nonce;
+    public ArrayList<Transaction> transactions = new ArrayList<Transaction>(); // Du lieu se la mot tin nhan don gian.
+    public long timeStamp; // so mili giay ke tu 1/1/1970.
+    public int nonce; // So nguyen ngau nhien
 
     //Block Constructor.
     public Block(String previousHash) {
         this.previousHash = previousHash;
         this.timeStamp = new Date().getTime();
 
-        this.hash = calculateHash(); //Making sure we do this after we set the other values.
+        this.hash = calculateHash(); // Dam bao chung ta thuc hien dieu nay sau khi chung ta da dat cac gia tri khac.
     }
 
-    //Calculate new hash based on blocks contents
+    // Tinh toan hash moi dua tren noi dung cua block
     public String calculateHash() {
         String calculatedhash = StringUtil.applySha256(
                 previousHash +
@@ -32,30 +28,30 @@ public class Block {
         return calculatedhash;
     }
 
-    //Increases nonce value until hash target is reached.
+    // Tang gia tri nonce cho den khi dat duoc muc tieu hash.
     public void mineBlock(int difficulty) {
         merkleRoot = StringUtil.getMerkleRoot(transactions);
-        String target = StringUtil.getDificultyString(difficulty); //Create a string with difficulty * "0"
+        String target = StringUtil.getDificultyString(difficulty); // Tao mot chuoi voi do kho * "0"
         while (!hash.substring(0, difficulty).equals(target)) {
             nonce++;
             hash = calculateHash();
         }
-        System.out.println("Block Mined!!! : " + hash);
+        System.out.println("Block da duoc dao!!! : " + hash);
     }
 
-    //Add transactions to this block
+    // Them giao dich vao block nay
     public boolean addTransaction(Transaction transaction) {
-        //process transaction and check if valid, unless block is genesis block then ignore.
+        // Xu ly giao dich va kiem tra xem co hop le khong, tru khi block la block genesis thi bo qua.
         if (transaction == null) return false;
         if ((previousHash != "0")) {
             if ((transaction.processTransaction() != true)) {
-                System.out.println("Transaction failed to process. Discarded.");
+                System.out.println("Giao dich khong hop le. Da bi loai bo.");
                 return false;
             }
         }
 
         transactions.add(transaction);
-        System.out.println("Transaction Successfully added to Block");
+        System.out.println("Giao dich da duoc them vao block");
         return true;
     }
 }
